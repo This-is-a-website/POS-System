@@ -1,0 +1,103 @@
+--- SYSTEM ONLINE ---
+Target Database File: C:\Users\littl\OneDrive\Desktop\POS sytem\gift_cards.json
+
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): 1
+Enter cardholder name: Will MacPhail
+Enter starting balance ($): 10
+[DISK SAFE] Database saved securely with 1 total code(s).
+
+[SUCCESS] New card added alongside existing codes.
+Code to use: 7993-4098
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): 1
+Enter cardholder name: Marie MacPhail
+Enter starting balance ($): 10
+[DISK SAFE] Database saved securely with 2 total code(s).
+
+[SUCCESS] New card added alongside existing codes.
+Code to use: 8498-8148
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): Grandma
+[ERROR] Invalid selection option.
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): 1
+Enter cardholder name: Grandma
+Enter starting balance ($): 10
+[DISK SAFE] Database saved securely with 3 total code(s).
+
+[SUCCESS] New card added alongside existing codes.
+Code to use: 7083-8842
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): 1
+Enter cardholder name: Grandpa
+Enter starting balance ($): 10
+[DISK SAFE] Database saved securely with 4 total code(s).
+
+[SUCCESS] New card added alongside existing codes.
+Code to use: 0169-7722
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): 1
+Enter cardholder name: Mark
+Enter starting balance ($): 10
+[DISK SAFE] Database saved securely with 5 total code(s).
+
+[SUCCESS] New card added alongside existing codes.
+Code to use: 1277-2294
+
+=== REGISTRY CONTROLLER ===
+1. Generate a Small Code
+2. Look Up Code Info
+3. Add Money to a Code
+4. Paste Updated JSON Database (From POS HTML)
+5. Copy Database to Clipboard (For POS HTML Setup)
+6. Exit
+Select an option (1-6): 1
+Enter cardholder name: William MacPhail
+Enter starting balance ($): 0
+[DISK SAFE] Database saved securely with 6 total code(s).
+
+[SUCCESS] New card added alongside existing codes.
+Code to use: 2820-1638

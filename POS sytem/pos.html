@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Small Code Terminal</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #eef2f3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 380px; text-align: center; }
+        h2 { color: #333; margin-bottom: 20px; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { background: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .hidden { display: none; }
+        .highlight { font-size: 24px; color: #28a745; font-weight: bold; margin: 10px 0; }
+        .alert { background: #ffe3e3; color: #d9534f; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; }
+        .receipt-box { background: #f8f9fa; padding: 15px; border: 2px dashed #bbb; margin-top: 15px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- STEP 1: SIMULATED DATABASE SYNC -->
+    <div id="sync-screen">
+        <h2>POS System Setup</h2>
+        <p style="font-size:13px; color:#666; text-align:left;">Paste the content of your <strong>gift_cards.json</strong> file below to sync the terminal database:</p>
+        <textarea id="db-paste" style="width:100%; height:120px; font-family:monospace; padding:8px; box-sizing:border-box;" placeholder='{"1234-5678": {"encoded_name": "74-111-104-110", "balance": 50.0}}'></textarea>
+        <button onclick="syncDatabase()">Sync & Open Register</button>
+    </div>
+
+    <!-- STEP 2: CUSTOMER INPUT -->
+    <div id="customer-screen" class="hidden">
+        <h2>Enter Payment Code</h2>
+        <p style="color:#666;">Type your 8-digit shop code to pay</p>
+        <input type="text" id="customer-code" placeholder="XXXX-XXXX" style="text-align:center; font-size:20px; letter-spacing:2px;">
+        <button onclick="lookupCode()">Scan Code & Flip Screen</button>
+        <div id="customer-error" class="alert hidden"></div>
+    </div>
+
+    <!-- STEP 3: CASHIER PANEL -->
+    <div id="host-screen" class="hidden">
+        <h2 style="color: #d9534f; margin-top:0;">Host Console</h2>
+        <hr style="border:0; border-top:1px solid #eee;">
+        <p style="text-align: left; margin: 8px 0;"><strong>Customer:</strong> <span id="display-name">---</span></p>
+        <p style="text-align: left; margin: 8px 0;"><strong>Available Funds:</strong></p>
+        <div id="display-balance" class="highlight">$0.00</div>
+        
+        <input type="number" id="order-amount" step="0.01" min="0" placeholder="Enter Charge Total ($)">
+        <button onclick="processCharge()" style="background: #28a745;">Charge Balance</button>
+        <button onclick="cancelTransaction()" style="background: #6c757d; font-size:13px;">Cancel</button>
+    </div>
+
+    <!-- STEP 4: TRANSACTION COMPLETED / RECEIPT -->
+    <div id="receipt-screen" class="hidden">
+        <h2 style="color:#28a745;">Payment Approved</h2>
+        <div class="receipt-box">
+            <p style="margin:5px 0; font-size:14px;"><strong>Account Code:</strong> <span id="receipt-code"></span></p>
+            <p style="margin:5px 0; font-size:14px;"><strong>Charged:</strong> <span id="receipt-charged" style="color:#d9534f; font-weight:bold;"></span></p>
+            <p style="margin:5px 0; font-size:14px;"><strong>Remaining Balance:</strong> <span id="receipt-left" style="color:#28a745; font-weight:bold;"></span></p>
+        </div>
+        <p style="font-size:11px; color:#777; margin-top:15px;">Copy the updated system code block below and update your Python file if running disconnected:</p>
+        <textarea id="db-output" style="width:100%; height:80px; font-family:monospace; font-size:11px;" readonly></textarea>
+        <button onclick="resetPOS()">Next Customer</button>
+    </div>
+</div>
+
+<script>
+    let localDB = {};
+    let currentActiveCode = "";
+
+    function decodeName(encodedStr) {
+        try {
+            return encodedStr.split('-').map(num => String.fromCharCode(parseInt(num))).join('');
+        } catch(e) {
+            return "Valid User";
+        }
+    }
+
+    function syncDatabase() {
+        const rawData = document.getElementById('db-paste').value.trim();
+        try {
+            localDB = rawData ? JSON.parse(rawData) : {};
+            document.getElementById('sync-screen').classList.add('hidden');
+            document.getElementById('customer-screen').classList.remove('hidden');
+        } catch(e) {
+            alert("Invalid JSON data format. Copy directly from your gift_cards.json file.");
+        }
+    }
+
+    function lookupCode() {
+        const inputCode = document.getElementById('customer-code').value.trim();
+        const errDiv = document.getElementById('customer-error');
+        errDiv.classList.add('hidden');
+
+        if (!localDB[inputCode]) {
+            errDiv.textContent = "Code not found in register system.";
+            errDiv.classList.remove('hidden');
+            return;
+        }
+
+        currentActiveCode = inputCode;
+        
+        // Show human readable decoded string name to Host
+        const originalName = decodeName(localDB[inputCode].encoded_name);
+        document.getElementById('display-name').textContent = originalName;
+        document.getElementById('display-balance').textContent = "$" + parseFloat(localDB[inputCode].balance).toFixed(2);
+
+        // Transition Screen View to Register Attendant 
+        document.getElementById('customer-screen').classList.add('hidden');
+        document.getElementById('host-screen').classList.remove('hidden');
+    }
+
+    function processCharge() {
+        const chargeAmount = parseFloat(document.getElementById('order-amount').value);
+        const maxAvailable = localDB[currentActiveCode].balance;
+
+        if (isNaN(chargeAmount) || chargeAmount <= 0) {
+            return alert("Please enter a clear charge numerical total.");
+        }
+        if (chargeAmount > maxAvailable) {
+            return alert("Decline: Insufficient account credit balance.");
+        }
+
+        // Apply Math Transaction
+        localDB[currentActiveCode].balance = maxAvailable - chargeAmount;
+
+        // Print Transaction details 
+        document.getElementById('receipt-code').textContent = currentActiveCode;
+        document.getElementById('receipt-charged').textContent = "-$" + chargeAmount.toFixed(2);
+        document.getElementById('receipt-left').textContent = "$" + localDB[currentActiveCode].balance.toFixed(2);
+        
+        // Output clean updated system text 
+        document.getElementById('db-output').value = JSON.stringify(localDB);
+
+        document.getElementById('host-screen').classList.add('hidden');
+        document.getElementById('receipt-screen').classList.remove('hidden');
+    }
+
+    function cancelTransaction() {
+        resetPOS();
+    }
+
+    function resetPOS() {
+        document.getElementById('customer-code').value = "";
+        document.getElementById('order-amount').value = "";
+        document.getElementById('receipt-screen').classList.add('hidden');
+        document.getElementById('host-screen').classList.add('hidden');
+        document.getElementById('customer-screen').classList.remove('hidden');
+        currentActiveCode = "";
+    }
+</script>
+
+</body>
+</html>

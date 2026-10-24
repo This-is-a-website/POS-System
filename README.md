@@ -13,3 +13,6 @@ A: If you have pip on you computer go in your CMD and type 'pip install (The lib
 
 # HELP!!!!
 If using the .Json stream file, Have Ngrok installed and open Ngrok then type Ngrok http 2017
+
+
+               # Made by William

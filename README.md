@@ -12,7 +12,6 @@ Q: Why does it say none of he library's are installed?
 A: If you have pip on you computer go in your CMD and type 'pip install (The library that's not installed here) If that does not work use 'py -m install (Library here) or 'python -m install (Library here)
 
 # HELP!!!!
-If using the .Json stream file, Have Ngrok installed and open Ngrok then type Ngrok http 2017
+If using the .Json stream file, Have Ngrok installed and open Ngrok then type Ngrok http 20
 
-
-               # Made by William
+# Made by William MacPhail

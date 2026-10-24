@@ -1,5 +1,6 @@
 # POS System
 POS System (delete the stuff in the .Json and then run the admin.py)
+(The .Json file is just a demo. You can delete the WHOLE file and the admin.py will make a new file with nothing in it)
 
 # Things you need
 One Tablet,

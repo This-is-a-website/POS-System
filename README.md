@@ -1,4 +1,4 @@
-# POS-System
+# POS System
 POS System (delete the stuff in the .Json and then run the admin.py)
 
 # Things you need
